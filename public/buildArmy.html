@@ -5,8 +5,94 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strongholds and Followers Army Builder</title>
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-    
+    <header>
+        <h1>Strongholds and Followers: Army Builder</h1>
+    </header>
+    <nav>
+        <a href="index.ht">Home</a>
+        <a class="active" href="buildArmy.html">Build Army</a>
+        <a href="viewArmies.html">View Armies</a>
+    </nav>
+    <section>
+        <h2>Army Builder</h2>
+        <p>Please use the form below to start building your army!  The "Commander Name" field will be used to recall the army later, so make it memorable!</p>
+    </section>
+    <form action="">
+        <label for="">Commander Name</label>
+        <input type="text" name="command-name" id="command-name" placeholder="Commander Name">
+        <br>
+        <label for="army-name">Army Name</label>
+        <input type="text" name="army-name" id="army-name" placeholder="Army Name">
+        <br>
+        <label for="ancestry">Ancestry</label>
+        <select name="ancestry" id="ancestry">
+            <option value="none" selected disabled hidden>Select an Option</option>
+            <option value="bugbear">Bugbear</option>
+            <option value="dragonborn">Dragonborn</option>
+            <option value="dwarf">Dwarf</option>
+            <option value="elf">Elf</option>
+            <option value="elfW">Elf (Winged)</option>
+            <option value="ghoul">Ghoul</option>
+            <option value="gnoll">Gnoll</option>
+            <option value="gnome">Gnome</option>
+            <option value="goblin">Goblin</option>
+            <option value="hobgoblin">Hobgoblin</option>
+            <option value="human">Human</option>
+            <option value="kobold">Kobold</option>
+            <option value="lizardfolk">Lizardfolk</option>
+            <option value="ogre">Ogre</option>
+            <option value="orc">Orc</option>
+            <option value="skeleton">Skeleton</option>
+            <option value="treant">Treant</option>
+            <option value="troll">Troll</option>
+            <option value="zombie">Zombie</option>
+        </select>
+        <br>
+        <label for="experience">Experience</label>
+        <select name="experience" id="experience">
+            <option value="none" selected disabled hidden>Select an Option</option>
+            <option value="green">Green</option>
+            <option value="regular">Regular</option>
+            <option value="seasoned">Seasoned</option>
+            <option value="veteran">Veteran</option>
+            <option value="elite">Elite</option>
+            <option value="super-elite">Super-Elite</option>
+        </select>
+        <br>
+        <label for="equipment">Equipment</label>
+        <select name="equipment" id="equipment">
+            <option value="none" selected disabled hidden>Select an Option</option>
+            <option value="light">Light</option>
+            <option value="medium">Medium</option>
+            <option value="heavy">Heavy</option>
+            <option value="super-heavy">Super-Heavy</option>
+        </select>
+        <br>
+        <label for="type">Type</label>
+        <select name="type" id="type">
+            <option value="none" selected disabled hidden>Select an Option</option>
+            <option value="flying">Flying</option>
+            <option value="archers">Archers</option>
+            <option value="cavalry">Cavalry</option>
+            <option value="levies">Levies</option>
+            <option value="infantry">Infantry</option>
+            <option value="siege">Siege Engine</option>
+        </select>
+        <br>
+        <label for="size">Size</label>
+        <select name="size" id="size">
+            <option value="none" selected disabled hidden>Select an Option</option>
+            <option value="1">1d4</option>
+            <option value="2">1d6</option>
+            <option value="3">1d8</option>
+            <option value="4">1d10</option>
+            <option value="5">1d12</option>
+        </select>
+        <br>
+        <button>Submit</button>
+    </form>
 </body>
 </html>
