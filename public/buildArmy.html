@@ -16,11 +16,13 @@
         <a class="active" href="buildArmy.html">Build Army</a>
         <a href="viewArmies.html">View Armies</a>
     </nav>
+    
     <section>
         <h2>Army Builder</h2>
         <p>Please use the form below to start building your army!  The "Commander Name" field will be used to recall the army later, so make it memorable!</p>
     </section>
-    <form action="./index.js" method="post" id="builderForm">
+
+    <form method="post" id="builderForm">
         <label for="">Commander Name</label>
         <input type="text" name="command-name" id="command-name" placeholder="Commander Name">
         <br>
@@ -94,7 +96,7 @@
         <br>
         <button id="build-submit">Submit</button>
     </form>
-    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./buildArmy.js"></script>
 </body>
 </html>
