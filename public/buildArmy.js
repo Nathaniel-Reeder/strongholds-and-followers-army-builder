@@ -15,11 +15,11 @@ const buildArmy = (event) => {
         ancestry: document.getElementById('ancestry').value,
         experience: document.getElementById('experience').value,
         equipment: document.getElementById('equipment').value,
-        type: document.getElementById('type').value,
+        unitType: document.getElementById('type').value,
         size: document.getElementById('size').value
     }
     // console.log(bodyObj)
-    axios.post(`${baseURL}/army`, bodyObj).then(console.log('sent to backend'))
+    axios.post(`${baseURL}/army`, bodyObj).then(console.log('response received'))
 }
 
 //Display the Army Card of the army that was created.
