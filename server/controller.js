@@ -215,7 +215,18 @@ const getArmyObj = async (army) => {
                 ON army.unit_type_id = unit_type.id
             JOIN size
                 ON army.size_id = size.id
+            WHERE army.name = :army;
+    `, {replacements: replaceObj})
+
+    let traitsResponse = await sequelize.query(`
+        SELECT traits.name AS trait_name, description
+        FROM army 
+            JOIN army_traits
+                ON army.id = army_traits.army_id
+            JOIN traits 
+                ON traits.id = army_traits.traits_id
         WHERE army.name = :army;
     `, {replacements: replaceObj})
-    return databaseResponse[0][0]
+    let toRespond = [databaseResponse[0][0], traitsResponse[0][0]]
+    return toRespond
 }
