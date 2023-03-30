@@ -12,7 +12,6 @@ const sequelize = new Sequelize(process.env.CONNECTION_STRING, {
 
 module.exports = {
     buildArmy: async (req, res) => {
-        console.log(req.body)
         //destructure info from the req.body
         const {commander, armyName, ancestry, experience, equipment, unitType, size} = req.body
         let replacementObj = {
@@ -49,12 +48,12 @@ module.exports = {
             WHERE ancestry_id = :ancestry
         `, {replacements: replacementObj})
         extractedTraitCosts[0].forEach((obj) => {traitCost.push(obj.cost)})
-        console.log('Console Log is Here: ', traitCost)
+    
 
     //adjust variables with modifiers collected from the database for ancestry
         let ancAttackMod = await sequelize.query(`SELECT attack FROM ancestry WHERE id = :ancestry;`, {replacements: replacementObj})
         attack += ancAttackMod[0][0].attack
-        console.log('Ancestry attack: ', attack)
+        
 
         let ancPowerMod = await sequelize.query(`SELECT power FROM ancestry WHERE id = :ancestry;`, {replacements: replacementObj})
         power += ancPowerMod[0][0].power
@@ -72,7 +71,7 @@ module.exports = {
 
         let expAtkMod = await sequelize.query(`SELECT attack FROM experience WHERE id = :experience;`, {replacements: replacementObj})
         attack += expAtkMod[0][0].attack
-        console.log('Experience attack: ', attack)
+        
 
         let expToughMod = await sequelize.query(`SELECT toughness FROM experience WHERE id = :experience;`, {replacements: replacementObj})
         toughness += expToughMod[0][0].toughness
@@ -92,7 +91,7 @@ module.exports = {
 
         let unitAtkMod = await sequelize.query(`SELECT attack FROM unit_type WHERE id = :unitType;`, {replacements: replacementObj})
         attack += unitAtkMod[0][0].attack
-        console.log('Unit Type attack: ', attack)
+        
 
         let unitPwrMod = await sequelize.query(`SELECT power FROM unit_type WHERE id = :unitType;`, {replacements: replacementObj})
         power += unitPwrMod[0][0].power
@@ -132,7 +131,6 @@ module.exports = {
         cost += 30
     
     //Figure out if the commander entered exists
-        console.log('COMMANDER CONSOLE LOG HERE: ', commander)
         let commandExistance = await sequelize.query(`
             SELECT EXISTS 
             (SELECT name FROM commander WHERE name = :commander);
@@ -170,7 +168,7 @@ module.exports = {
             //insert the commander's id and other data into the army table
             await sequelize.query(`
                 INSERT INTO army (commander_id, name, cost, ancestry_id, experience_id, equipment_id, unit_type_id, attack, defense, power, toughness, morale, size_id)
-                VALUES (${extractedCmdId} , ':armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
+                VALUES (${extractedCmdId} , :armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
             `, {replacements: replacementObj})
             // get the ID of the new army
             let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName`, {replacements: replacementObj})
@@ -183,7 +181,8 @@ module.exports = {
                 `)
             })
         }
-        res.send().status(200)
+        let response = await getArmyObj(armyName)
+        res.send(response).status(200)
     },
     viewAllArmies: (req, res) => {
 
@@ -199,8 +198,24 @@ module.exports = {
     }
 }
 
-// const getArmyObj = () => {
-//     let databaseResponse = sequelize.query(`
-//         SELECT commander, name, cost, 
-//     `)
-// }
+const getArmyObj = async (army) => {
+    let replaceObj = {army}
+    let databaseResponse = await sequelize.query(`
+        SELECT commander.name AS commander_name, army.name AS army_name, cost, ancestry_id, experience_id, equipment_id, unit_type_id, army.attack, army.defense, army.power, army.toughness, army.morale, size_id, ancestry, level, equipment, unit_type, size 
+        FROM army 
+            JOIN commander
+                ON army.commander_id = commander.id
+            JOIN ancestry
+                ON army.ancestry_id = ancestry.id
+            JOIN experience
+                ON army.experience_id = experience.id
+            JOIN equipment
+                ON army.equipment_id = equipment.id
+            JOIN unit_type
+                ON army.unit_type_id = unit_type.id
+            JOIN size
+                ON army.size_id = size.id
+        WHERE army.name = :army;
+    `, {replacements: replaceObj})
+    return databaseResponse[0][0]
+}
