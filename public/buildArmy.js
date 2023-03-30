@@ -19,7 +19,7 @@ const buildArmy = (event) => {
         size: document.getElementById('size').value
     }
     // console.log(bodyObj)
-    axios.post(`${baseURL}/army`, bodyObj).then(console.log('response received'))
+    axios.post(`${baseURL}/army`, bodyObj).then((res) => console.log(res.data)).catch((err) => console.log(err))
 }
 
 //Display the Army Card of the army that was created.
