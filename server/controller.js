@@ -134,29 +134,40 @@ module.exports = {
         let commandExistance = await sequelize.query(`
             SELECT EXISTS 
             (SELECT name FROM commander WHERE name = :commander);
-        `, {replacements: replacementObj})   
+        `, {replacements: replacementObj})  
 
         // If the commander does exist, get its ID, then insert data into the army table in the database
         if (commandExistance[0][0].exists) {
-            //get commander ID
-            let extractId = await sequelize.query(`SELECT id FROM commander WHERE name = :commander`, {replacements: replacementObj})
-            let id = extractId[0][0].id
-            //insert that id and other data already gathered into the army table
-            await sequelize.query(`
-                INSERT INTO army (commander_id, name, cost, ancestry_id, experience_id, equipment_id, unit_type_id, attack, defense, power, toughness, morale, size_id)
-                VALUES
-                (${id} , :armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
-            `, {replacements: replacementObj})
-            // get the ID of the new army
-            let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName`, {replacements: replacementObj})
-                extractedArmyId = extractedArmyId[0][0].id
-            //Create an entry in army_traits for each trait the army has, linking the traits to the army.
-            traits.forEach(async (traitId) => {
+
+            //figure out if the army exists
+            console.log('The commander exists and we are checking if the army name already exists under the commander')
+            console.log('Army Name: ' + armyName)
+            console.log('Commander Name: ' + commander)
+            let armyExists = await sequelize.query(`SELECT EXISTS (SELECT army.name AS aname, commander.name AS cname FROM army  JOIN commander ON commander_id = commander.id WHERE army.name = :armyName AND commander.name = :commander )`, {replacements: replacementObj})
+            console.log(armyExists[0][0])
+            if(armyExists[0][0].exists) {
+                res.status(400)
+            } else {
+                //get commander ID
+                let extractId = await sequelize.query(`SELECT id FROM commander WHERE name = :commander`, {replacements: replacementObj})
+                let id = extractId[0][0].id
+                //insert that id and other data already gathered into the army table
                 await sequelize.query(`
-                    INSERT INTO army_traits (army_id, traits_id)
-                    VALUES (${extractedArmyId}, ${traitId});
-                `)
-            })
+                    INSERT INTO army (commander_id, name, cost, ancestry_id, experience_id, equipment_id, unit_type_id, attack, defense, power, toughness, morale, size_id)
+                    VALUES
+                    (${id} , :armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
+                `, {replacements: replacementObj})
+                // get the ID of the new army
+                let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName`, {replacements: replacementObj})
+                    extractedArmyId = extractedArmyId[0][0].id
+                //Create an entry in army_traits for each trait the army has, linking the traits to the army.
+                traits.forEach(async (traitId) => {
+                    await sequelize.query(`
+                        INSERT INTO army_traits (army_id, traits_id)
+                        VALUES (${extractedArmyId}, ${traitId});
+                    `)
+                })
+            }
         } else {
             //Create the commander in the database
             await sequelize.query(`
@@ -184,8 +195,29 @@ module.exports = {
         let response = await getArmyObj(armyName)
         res.send(response).status(200)
     },
-    viewAllArmies: (req, res) => {
-
+    viewAllArmies: async (req, res) => {
+        let allArmiesResponse = await sequelize.query(`
+            SELECT army.id AS id, commander.id AS commander_id, commander.name AS commander_name, army.name AS army_name, army.cost, ancestry_id, experience_id, equipment_id, unit_type_id, army.attack, army.defense, army.power, army.toughness, army.morale, size_id, ancestry, level, equipment, unit_type, size, traits.name, description
+            FROM army 
+                JOIN commander
+                    ON army.commander_id = commander.id
+                JOIN ancestry
+                    ON army.ancestry_id = ancestry.id
+                JOIN experience
+                    ON army.experience_id = experience.id
+                JOIN equipment
+                    ON army.equipment_id = equipment.id
+                JOIN unit_type
+                    ON army.unit_type_id = unit_type.id
+                JOIN size
+                    ON army.size_id = size.id
+                JOIN army_traits 
+                    ON army_traits.army_id = army.id
+                JOIN traits 
+                    ON traits.id = army_traits.traits_id
+        `)
+        
+        res.send(allArmiesResponse[0]).status(200)
     },
     viewCommanderArmies: (req, res) => {
 
@@ -201,7 +233,7 @@ module.exports = {
 const getArmyObj = async (army) => {
     let replaceObj = {army}
     let databaseResponse = await sequelize.query(`
-        SELECT commander.name AS commander_name, army.name AS army_name, cost, ancestry_id, experience_id, equipment_id, unit_type_id, army.attack, army.defense, army.power, army.toughness, army.morale, size_id, ancestry, level, equipment, unit_type, size 
+        SELECT army.id AS id, commander.id AS commander_id, commander.name AS commander_name, army.name AS army_name, army.cost, ancestry_id, experience_id, equipment_id, unit_type_id, army.attack, army.defense, army.power, army.toughness, army.morale, size_id, ancestry, level, equipment, unit_type, size, traits.name, description
         FROM army 
             JOIN commander
                 ON army.commander_id = commander.id
@@ -215,18 +247,13 @@ const getArmyObj = async (army) => {
                 ON army.unit_type_id = unit_type.id
             JOIN size
                 ON army.size_id = size.id
+            JOIN army_traits 
+                ON army_traits.army_id = army.id
+            JOIN traits 
+                ON traits.id = army_traits.traits_id
             WHERE army.name = :army;
     `, {replacements: replaceObj})
 
-    let traitsResponse = await sequelize.query(`
-        SELECT traits.name AS trait_name, description
-        FROM army 
-            JOIN army_traits
-                ON army.id = army_traits.army_id
-            JOIN traits 
-                ON traits.id = army_traits.traits_id
-        WHERE army.name = :army;
-    `, {replacements: replaceObj})
-    let toRespond = [databaseResponse[0][0], traitsResponse[0][0]]
+    let toRespond = [databaseResponse[0]]
     return toRespond
 }
