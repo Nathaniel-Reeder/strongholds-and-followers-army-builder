@@ -219,14 +219,69 @@ module.exports = {
         
         res.send(allArmiesResponse[0]).status(200)
     },
-    viewCommanderArmies: (req, res) => {
+    viewCommanderArmies: async (req, res) => {
+        const {commander} = req.body
+        let replaceObj = {commander}
+        let armiesByCommander = await sequelize.query(`
+        SELECT army.id AS id, commander.id AS commander_id, commander.name AS commander_name, army.name AS army_name, army.cost, ancestry_id, experience_id, equipment_id, unit_type_id, army.attack, army.defense, army.power, army.toughness, army.morale, size_id, ancestry, level, equipment, unit_type, size, traits.name, description
+        FROM army 
+            JOIN commander
+                ON army.commander_id = commander.id
+            JOIN ancestry
+                ON army.ancestry_id = ancestry.id
+            JOIN experience
+                ON army.experience_id = experience.id
+            JOIN equipment
+                ON army.equipment_id = equipment.id
+            JOIN unit_type
+                ON army.unit_type_id = unit_type.id
+            JOIN size
+                ON army.size_id = size.id
+            JOIN army_traits 
+                ON army_traits.army_id = army.id
+            JOIN traits 
+                ON traits.id = army_traits.traits_id
+        WHERE commander.name = :commander
+        `, {replacements: replaceObj})
 
+        res.send(armiesByCommander[0]).status(200)
     },
-    editArmy: (req, res) => {
+    deleteArmy: async (req, res) => {
+        console.log(req.params.id)
+        //destructure the id from the request
+        const {id} = req.params
+        let replaceObj = {id}
 
-    },
-    deleteArmy: (req, res) => {
+        //Get the id of the commander
+        let commandId = await sequelize.query(`SELECT commander_id FROM army WHERE id = :id`, {replacements: replaceObj})
+        commandId = commandId[0][0].commander_id 
+        console.log(commandId)
+
+        // Delete the army
+        const deleteResponse = await sequelize.query(`
+            DELETE FROM army_traits WHERE army_id = :id;
+            DELETE FROM army WHERE id = :id;
+            SELECT true;
+        `, {replacements: replaceObj})
+
+        //If the commander has no armies associated with them after the delete, delete the commander
+        //Check if the commander has armies
+        let hasArmies = await sequelize.query(`
+            SELECT EXISTS (
+                SELECT commander.name FROM commander 
+                JOIN army 
+                    ON army.commander_id = commander.id
+                WHERE commander.id = ${commandId}
+            )
+        `)
+        // If the commander does NOT have armies, delete the commander
+        if(!hasArmies[0][0].exists) {
+            await sequelize.query(`DELETE FROM commander WHERE id = ${commandId}`)
+        }
         
+        let toRespond = deleteResponse[0][0].bool
+        console.log(toRespond)
+        res.send(toRespond)
     }
 }
 

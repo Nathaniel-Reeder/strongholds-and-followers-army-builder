@@ -10,8 +10,7 @@ const {buildArmy, viewAllArmies, viewCommanderArmies, editArmy, deleteArmy} = co
 
 app.post('/army', buildArmy);
 app.get('/army/view-all', viewAllArmies);
-app.get('/army/commander', viewCommanderArmies);
-app.put('/army/:id', editArmy);
+app.post('/army/commander', viewCommanderArmies);
 app.delete('/army/:id', deleteArmy);
 
 app.listen(4000, () => console.log('Server running on port 4000'))
