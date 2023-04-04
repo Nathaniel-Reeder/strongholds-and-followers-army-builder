@@ -30,8 +30,12 @@ const armyContainer = document.getElementById("army-container")
 
 // Function to display army cards 
 const displayArmyCard = response => {
-    // console.log(response)
-    
+    // if the response is an empty array, give an alert that there are no armies to display
+    console.log(response.data)
+    if (response.data.length === 0){
+        alert('Cannot display armies; none were found.')
+    }
+
     // Loop over the response
     // console.log(response.data[0].id)
     armyContainer.innerHTML = ``
@@ -54,10 +58,13 @@ const capitalize = s => s && s[0].toUpperCase() + s.slice(1)
 
 //Function to create the HTML army card
 const createArmyCard = (response, armyId, prevId, i) => {
+    console.log(response)
+
     // Create the army card element
     const armyCard = document.createElement('div')
     armyCard.classList.add('army-card')
     armyCard.setAttribute('id', `army-${armyId}`)
+
     // If the army has already been logged, only get the traits, otherwise create the initial army card
     if(armyId === prevId){
         // console.log(`Army ID: ${armyId}`, `prevId: ${prevId}`)
@@ -105,15 +112,51 @@ const createArmyCard = (response, armyId, prevId, i) => {
             <button onclick="deleteArmy(${armyId})">Delete</button>
             `
         armyContainer.appendChild(armyCard)
+
+        //Check if the army is a siege engine or cavalry and add the appropriate traits.
+        if(unit_type === 'Cavalry'){
+            const traitsSection = document.getElementById(`traits-${armyId}`)
+            const traitCard = document.createElement('div')
+            traitCard.classList.add('trait')
+            traitCard.innerHTML = `
+            <h5>Charge</h5>
+            <p>Cannot use while engaged. A Charge is an attack with advantage on the Attack check. It inflicts 2 casualties on a successful Power check. The charging unit is then engaged with the defending unit and must make a DC 13 Morale check to disengage.</p>
+            `
+            traitsSection.appendChild(traitCard)
+        }
+         
+        if(unit_type === 'Siege'){
+            const traitsSection = document.getElementById(`traits-${armyId}`)
+            const traitCard = document.createElement('div')
+            traitCard.classList.add('trait')
+            traitCard.innerHTML = `
+            <h5>Siege Engine</h5>
+            <p>This unit can attack fortifications, dealing 1d6 damage on a hit.</p>
+            `
+            traitsSection.appendChild(traitCard)
+        }
+
+        //If the traits aren't null, add them
+        if(name !== null){
+            const traitsSection = document.getElementById(`traits-${armyId}`)
+            const traitCard = document.createElement('div')
+            traitCard.classList.add('trait')
+            traitCard.innerHTML = `
+            <h5>${name}</h5>
+            <p>${description}</p>
+            `
+            traitsSection.appendChild(traitCard)
+        } else {
+            const traitsSection = document.getElementById(`traits-${armyId}`)
+            const traitCard = document.createElement('div')
+            traitCard.classList.add('trait')
+            traitCard.innerHTML = `
+            <p>This unit has no racial traits.</p>
+            `
+            traitsSection.appendChild(traitCard)
+        }
         
-        const traitsSection = document.getElementById(`traits-${armyId}`)
-        const traitCard = document.createElement('div')
-        traitCard.classList.add('trait')
-        traitCard.innerHTML = `
-        <h5>${name}</h5>
-        <p>${description}</p>
-        `
-        traitsSection.appendChild(traitCard)
+        
     }
 }
 

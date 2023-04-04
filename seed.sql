@@ -48,7 +48,7 @@ CREATE TABLE size(
 CREATE TABLE traits(
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE,
-    description VARCHAR NOT NULL,
+    description VARCHAR,
     cost INTEGER
 );
 
@@ -122,7 +122,8 @@ VALUES
     ('Twisting Roots', 'As an action, this unit can sap the walls of a fortification. Siege units have advantage on Power checks against sapped fortifications.', 200),
     ('Undead', 'Green and regular troops must pass a Morale check to attack this unit. Each enemy unit need only do this once.', 50),
     ('Siege Engine', 'This unit can attack fortifications, dealing 1d6 damage on a hit.', NULL),
-    ('Charge', 'Cannot use while engaged. A Charge is an attack with advantage on the Attack check. It inflicts 2 casualties on a successful Power check. The charging unit is then engaged with the defending unit and must make a DC 13 Morale check to disengage.', NULL);
+    ('Charge', 'Cannot use while engaged. A Charge is an attack with advantage on the Attack check. It inflicts 2 casualties on a successful Power check. The charging unit is then engaged with the defending unit and must make a DC 13 Morale check to disengage.', NULL),
+    (null, null, null);
 
 INSERT INTO experience (level, attack, toughness, morale)
 VALUES 
@@ -174,15 +175,15 @@ VALUES
     --gnoll
     (7, 6),
     --gnome 
-    (8, NULL),
+    (8, 19),
     --goblin 
-    (9, NULL),
+    (9, 19),
     --hobgoblin 
     (10, 2), (10, 8),
     --human 
     (11, 4),
     --kobold 
-    (12, NULL),
+    (12, 19),
     --lizardfolk 
     (13, 1),
     --ogre

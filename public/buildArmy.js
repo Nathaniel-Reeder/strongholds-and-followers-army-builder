@@ -29,6 +29,10 @@ const buildArmy = (event) => {
 }
 // section to contain the army card
 const armyContainer = document.getElementById("army-container")
+
+//Function to capitalize the first letter of each string
+const capitalize = s => s && s[0].toUpperCase() + s.slice(1)
+
 //Display the Army Card of the army that was created.
 
 const displayArmyCard = response => {
@@ -40,7 +44,9 @@ const displayArmyCard = response => {
     let armyId = response.data[0][0].id
     for (let i = 0; i < response.data[0].length; i++){
         // Destructure army data from the response
-        const {ancestry, army_name, commander_name, equipment, level, unit_type, cost, attack, defense, power, toughness, morale, size, name, description} = response.data[0][i]
+        let {ancestry, army_name, commander_name, equipment, level, unit_type, cost, attack, defense, power, toughness, morale, size, name, description} = response.data[0][i]
+        ancestry = capitalize(ancestry)
+        unit_type = capitalize(unit_type)
         
         // If i is 0, create the army card. Otherwise, just add the trait data. 
         if(i === 0){
@@ -73,7 +79,7 @@ const displayArmyCard = response => {
             armyContainer.appendChild(armyCard)
 
             //Check if the army is a siege engine or cavalry and add the appropriate traits.
-            if(unit_type === 'cavalry'){
+            if(unit_type === 'Cavalry'){
                 const traitsSection = document.getElementById(`traits-${armyId}`)
                 const traitCard = document.createElement('div')
                 traitCard.classList.add('trait')
@@ -84,7 +90,7 @@ const displayArmyCard = response => {
                 traitsSection.appendChild(traitCard)
             }
              
-            if(unit_type === 'siege'){
+            if(unit_type === 'Siege'){
                 const traitsSection = document.getElementById(`traits-${armyId}`)
                 const traitCard = document.createElement('div')
                 traitCard.classList.add('trait')
@@ -95,17 +101,29 @@ const displayArmyCard = response => {
                 traitsSection.appendChild(traitCard)
             }
 
-            // Add the first trait
-            const traitsSection = document.getElementById(`traits-${armyId}`)
-            const traitCard = document.createElement('div')
-            traitCard.classList.add('trait')
-            traitCard.innerHTML = `
-            <h5>${name}</h5>
-            <p>${description}</p>
-            `
-            traitsSection.appendChild(traitCard)
+            // Add the first trait if it's not null
 
+            if (name !== null) {
+                const traitsSection = document.getElementById(`traits-${armyId}`)
+                const traitCard = document.createElement('div')
+                traitCard.classList.add('trait')
+                traitCard.innerHTML = `
+                <h5>${name}</h5>
+                <p>${description}</p>
+                `
+                traitsSection.appendChild(traitCard)
+            } else {
+                const traitsSection = document.getElementById(`traits-${armyId}`)
+                const traitCard = document.createElement('div')
+                traitCard.classList.add('trait')
+                traitCard.innerHTML = `
+                <p>This unit has no racial traits.</p>
+                `
+                traitsSection.appendChild(traitCard)
+            }
         } else { 
+            // only add things if the trait isn't null
+            
             const traitsSection = document.getElementById(`traits-${armyId}`)
             const traitCard = document.createElement('div')
             traitCard.classList.add('trait')

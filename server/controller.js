@@ -136,6 +136,9 @@ module.exports = {
             (SELECT name FROM commander WHERE name = :commander);
         `, {replacements: replacementObj})  
 
+        //Set a variable for the army ID that can be updated later
+        let armyId = undefined
+
         // If the commander does exist, get its ID, then insert data into the army table in the database
         if (commandExistance[0][0].exists) {
 
@@ -145,9 +148,10 @@ module.exports = {
             console.log('Commander Name: ' + commander)
             let armyExists = await sequelize.query(`SELECT EXISTS (SELECT army.name AS aname, commander.name AS cname FROM army  JOIN commander ON commander_id = commander.id WHERE army.name = :armyName AND commander.name = :commander )`, {replacements: replacementObj})
             console.log(armyExists[0][0])
+            // If the army already exists under that commander, send a 400 error back, otherwise proceed with adding it to the database.
             if(armyExists[0][0].exists) {
                 res.status(400)
-            } else {
+            } else { 
                 //get commander ID
                 let extractId = await sequelize.query(`SELECT id FROM commander WHERE name = :commander`, {replacements: replacementObj})
                 let id = extractId[0][0].id
@@ -158,8 +162,10 @@ module.exports = {
                     (${id} , :armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
                 `, {replacements: replacementObj})
                 // get the ID of the new army
-                let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName`, {replacements: replacementObj})
-                    extractedArmyId = extractedArmyId[0][0].id
+                let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName AND commander_id = ${id}`, {replacements: replacementObj})
+                extractedArmyId = extractedArmyId[0][0].id
+                //Set the outer armyId variable to match the new army's id
+                armyId = extractedArmyId
                 //Create an entry in army_traits for each trait the army has, linking the traits to the army.
                 traits.forEach(async (traitId) => {
                     await sequelize.query(`
@@ -182,8 +188,10 @@ module.exports = {
                 VALUES (${extractedCmdId} , :armyName, ${cost}, :ancestry, :experience, :equipment, :unitType, ${attack}, ${defense}, ${power}, ${toughness}, ${morale}, :size);
             `, {replacements: replacementObj})
             // get the ID of the new army
-            let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName`, {replacements: replacementObj})
+            let extractedArmyId = await sequelize.query(`SELECT id FROM army WHERE name = :armyName AND commander_id = ${extractedCmdId}`, {replacements: replacementObj})
                 extractedArmyId = extractedArmyId[0][0].id
+                //Set the outer armyId variable to match the new army's id
+                armyId = extractedArmyId
             //Create an entry in army_traits for each trait the army has, linking the traits to the army.
             traits.forEach(async (traitId) => {
                 await sequelize.query(`
@@ -192,7 +200,7 @@ module.exports = {
                 `)
             })
         }
-        let response = await getArmyObj(armyName)
+        let response = await getArmyObj(armyId)
         res.send(response).status(200)
     },
     viewAllArmies: async (req, res) => {
@@ -216,6 +224,7 @@ module.exports = {
                 JOIN traits 
                     ON traits.id = army_traits.traits_id
         `)
+        console.log(allArmiesResponse[0])
         
         res.send(allArmiesResponse[0]).status(200)
     },
@@ -306,7 +315,7 @@ const getArmyObj = async (army) => {
                 ON army_traits.army_id = army.id
             JOIN traits 
                 ON traits.id = army_traits.traits_id
-            WHERE army.name = :army;
+        WHERE army.id = :army;
     `, {replacements: replaceObj})
 
     let toRespond = [databaseResponse[0]]
