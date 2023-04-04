@@ -5,7 +5,7 @@ const getAllBtn = document.getElementById("get-all-armies")
 const getByCommanderBtn = document.getElementById("by-commander")
 
 //base URL
-const baseURL = "http://localhost:4000"
+const baseURL = "../server/server.js"
 
 // GET from server
 
