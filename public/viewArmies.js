@@ -22,10 +22,17 @@ const getByCommander = event => {
     let bodyObj = {
         commander: document.getElementById('commander').value
     }
-    //Create a loader 
-    armyContainer.innerHTML = `
-        <div class="loader"></div>
-    `
+
+    if(bodyObj.commander === ''){
+        alert('Please input a commander.')
+    } else{
+         //Create a loader 
+        armyContainer.innerHTML = `
+            <div class="loader"></div>
+        `
+    }
+
+   
     axios.post(`${baseURL}/army/commander`, bodyObj).then(response => displayArmyCard(response)).catch(err => console.log(err))
 }
 
