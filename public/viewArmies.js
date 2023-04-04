@@ -10,6 +10,10 @@ const baseURL = "http://localhost:4000"
 // GET from server
 
 const getAllArmies = () => {
+    //Create a loader 
+    armyContainer.innerHTML = `
+        <div class="loader"></div>
+    `
     axios.get(`${baseURL}/army/view-all`).then(response => displayArmyCard(response)).catch(err => console.log(err))
 }
 
@@ -18,6 +22,10 @@ const getByCommander = event => {
     let bodyObj = {
         commander: document.getElementById('commander').value
     }
+    //Create a loader 
+    armyContainer.innerHTML = `
+        <div class="loader"></div>
+    `
     axios.post(`${baseURL}/army/commander`, bodyObj).then(response => displayArmyCard(response)).catch(err => console.log(err))
 }
 
@@ -86,28 +94,34 @@ const createArmyCard = (response, armyId, prevId, i) => {
 
         // console.log(armyId, name, description)
         armyCard.innerHTML = `
-            <h3>${army_name}</h3>
-            <h4 id="commander-${commander_id}">Commander: ${commander_name}</h4>
-            <p>${ancestry} ${equipment} ${level} ${unit_type}</p>
-            <p>Cost: ${cost}</p>
+            <h2 class="aelu">${army_name}</h2>
+            <h4 id="commander-${commander_id}" class="aelu">Commander: ${commander_name}</h4>
+            <p class="aelu">${ancestry} ${equipment} ${level} ${unit_type}</p>
+            <p class="aelu">Cost: ${cost}</p>
                 
             <table>
                 <tr>
-                    <td>Attack: +${attack}</td>
-                    <td>Defense: ${defense + 10}</td>
+                    <td>Attack:</td>
+                    <td>${attack}</td>
+                    <td>Defense:</td>
+                    <td>${defense + 10}</td>
                 </tr>
                 <tr>
-                    <td>Power: +${power}</td>
-                    <td>Toughness: ${toughness + 10}</td>
+                    <td>Power:</td>
+                    <td>${power}</td>
+                    <td>Toughness: </td>
+                    <td>${toughness + 10}</td>
                 </tr>
                 <tr>
-                    <td>Morale: +${morale}</td>
-                    <td>Size: ${size}</td>
+                    <td>Morale:</td>
+                    <td>${morale}</td>
+                    <td>Size:</td>
+                    <td>${size}</td>
                 </tr>
             </table>
             
             <h4>Traits:</h4>
-            <section id="traits-${armyId}"></section>
+            <section id="traits-${armyId}" class="traits-section"></section>
 
             <button onclick="deleteArmy(${armyId})">Delete</button>
             `
@@ -151,7 +165,7 @@ const createArmyCard = (response, armyId, prevId, i) => {
             const traitCard = document.createElement('div')
             traitCard.classList.add('trait')
             traitCard.innerHTML = `
-            <p>This unit has no racial traits.</p>
+            <p>This unit has no ancestry traits.</p>
             `
             traitsSection.appendChild(traitCard)
         }

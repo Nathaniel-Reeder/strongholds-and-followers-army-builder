@@ -4,6 +4,9 @@ let buildSubmit = document.querySelector('form')
 
 const baseURL = "http://localhost:4000"
 
+// section to contain the army card
+const armyContainer = document.getElementById("army-container")
+
 //POST to the server the data from the form
 
 const buildArmy = (event) => {
@@ -18,8 +21,18 @@ const buildArmy = (event) => {
         unitType: document.getElementById('type').value,
         size: document.getElementById('size').value
     }
-    console.log(bodyObj.commander)
-    console.log(bodyObj.armyName)
+    
+    if(bodyObj.commander === '' || bodyObj.armyName === '' || bodyObj.ancestry === "none" || bodyObj.experience === "none" || bodyObj.equipment === "none" || bodyObj.unitType === "none" || bodyObj.size === "none") {
+        alert("Please fill out the form completely before you submit it.")
+    } else {
+        //Create a loader 
+        armyContainer.innerHTML = `
+            <div class="loader"></div>
+        `
+    }
+
+    
+
     axios.post(`${baseURL}/army`, bodyObj).then(response => displayArmyCard(response)).catch((err) => {
         console.log(err)
         if (err.message === 'Request failed with status code 400') {
@@ -27,8 +40,6 @@ const buildArmy = (event) => {
         }
     })
 }
-// section to contain the army card
-const armyContainer = document.getElementById("army-container")
 
 //Function to capitalize the first letter of each string
 const capitalize = s => s && s[0].toUpperCase() + s.slice(1)
@@ -52,28 +63,34 @@ const displayArmyCard = response => {
         if(i === 0){
             //Create the army card
             armyCard.innerHTML = `
-                <h3>${army_name}</h3>
-                <h4>Commander: ${commander_name}</h4>
-                <p>${ancestry} ${equipment} ${level} ${unit_type}</p>
-                <p>Cost: ${cost}</p>
+                <h2 class="aelu">${army_name}</h2>
+                <h4 class="aelu">Commander: ${commander_name}</h4>
+                <p class="aelu">${ancestry} ${equipment} ${level} ${unit_type}</p>
+                <p class="aelu">Cost: ${cost}</p>
                     
                 <table>
                     <tr>
-                        <td>Attack: +${attack}</td>
-                        <td>Defense: ${defense + 10}</td>
+                        <td>Attack:</td>
+                        <td>${attack}</td>
+                        <td>Defense: </td>
+                        <td>${defense + 10}</td>
                     </tr>
                     <tr>
-                        <td>Power: +${power}</td>
-                        <td>Toughness: ${toughness + 10}</td>
+                        <td>Power:</td>
+                        <td>${power}</td>
+                        <td>Toughness:</td>
+                        <td>${toughness + 10}</td>
                     </tr>
                     <tr>
-                        <td>Morale: +${morale}</td>
-                        <td>Size: ${size}</td>
+                        <td>Morale:</td>
+                        <td>${morale}</td>
+                        <td>Size:</td>
+                        <td>${size}</td>
                     </tr>
                 </table>
         
                 <h4>Traits:</h4>
-                <section id="traits-${armyId}"></section>
+                <section id="traits-${armyId}" class="traits-section"></section>
                 
                 `
             armyContainer.appendChild(armyCard)
@@ -117,7 +134,7 @@ const displayArmyCard = response => {
                 const traitCard = document.createElement('div')
                 traitCard.classList.add('trait')
                 traitCard.innerHTML = `
-                <p>This unit has no racial traits.</p>
+                <p>This unit has no ancestry traits.</p>
                 `
                 traitsSection.appendChild(traitCard)
             }

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strongholds and Followers Army Builder</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -13,94 +14,105 @@
         <h1>Army Builder</h1>
     </header>
     <nav class="topnav">
-        <a href="index.html">Home</a>
-        <a class="active" href="buildArmy.html">Build Army</a>
-        <a href="viewArmies.html">View Armies</a>
+        <a href="index.html"><h2>Home</h2></a>
+        <a class="active" href="buildArmy.html"><h2>Build Army</h2></a>
+        <a href="viewArmies.html"><h2>View Armies</h2></a>
     </nav>
     
     <section class="about-section">
-        <h2>Army Builder</h2>
-        <p>Please use the form below to start building your army!  The "Commander Name" field will be used to recall the army later, so make it memorable!</p>
+        <h2>Build an Army</h2>
+        <p>Please use the form below to start building your army!  The "Commander Name" field is case sensitive.</p>
     </section>
 
-    <form method="post" id="builderForm">
-        <label for="">Commander Name</label>
-        <input type="text" name="command-name" id="command-name" placeholder="Commander Name">
-        <br>
-        <label for="army-name">Army Name</label>
-        <input type="text" name="army-name" id="army-name" placeholder="Army Name">
-        <br>
-        <label for="ancestry">Ancestry</label>
-        <select name="ancestry" id="ancestry">
-            <option value="none" selected disabled hidden>Select an Option</option>
-            <option value="1">Bugbear</option>
-            <option value="2">Dragonborn</option>
-            <option value="3">Dwarf</option>
-            <option value="4">Elf</option>
-            <option value="5">Elf (Winged)</option>
-            <option value="6">Ghoul</option>
-            <option value="7">Gnoll</option>
-            <option value="8">Gnome</option>
-            <option value="9">Goblin</option>
-            <option value="10">Hobgoblin</option>
-            <option value="11">Human</option>
-            <option value="12">Kobold</option>
-            <option value="13">Lizardfolk</option>
-            <option value="14">Ogre</option>
-            <option value="15">Orc</option>
-            <option value="16">Skeleton</option>
-            <option value="17">Treant</option>
-            <option value="18">Troll</option>
-            <option value="19">Zombie</option>
-        </select>
-        <br>
-        <label for="experience">Experience</label>
-        <select name="experience" id="experience">
-            <option value="none" selected disabled hidden>Select an Option</option>
-            <option value="1">Green</option>
-            <option value="2">Regular</option>
-            <option value="3">Seasoned</option>
-            <option value="4">Veteran</option>
-            <option value="5">Elite</option>
-            <option value="6">Super-Elite</option>
-        </select>
-        <br>
-        <label for="equipment">Equipment</label>
-        <select name="equipment" id="equipment">
-            <option value="none" selected disabled hidden>Select an Option</option>
-            <option value="1">Light</option>
-            <option value="2">Medium</option>
-            <option value="3">Heavy</option>
-            <option value="4">Super-Heavy</option>
-        </select>
-        <br>
-        <label for="type">Type</label>
-        <select name="type" id="type">
-            <option value="none" selected disabled hidden>Select an Option</option>
-            <option value="1">Flying</option>
-            <option value="2">Archers</option>
-            <option value="3">Cavalry</option>
-            <option value="4">Levies</option>
-            <option value="5">Infantry</option>
-            <option value="6">Siege Engine</option>
-        </select>
-        <br>
-        <label for="size">Size</label>
-        <select name="size" id="size">
-            <option value="none" selected disabled hidden>Select an Option</option>
-            <option value="1">1d4</option>
-            <option value="2">1d6</option>
-            <option value="3">1d8</option>
-            <option value="4">1d10</option>
-            <option value="5">1d12</option>
-        </select>
-        <br>
+    <section class="building">
+    <form method="post" id="builderForm" class="build-form">
+        <table>
+            <tr>
+                <td><label for="">Commander</label></td>
+                <td><input type="text" name="command-name" id="command-name" placeholder="Commander Name"></td>
+            </tr>
+            <tr>
+                <td><label for="army-name">Army Name</label></td>
+                <td><input type="text" name="army-name" id="army-name" placeholder="Army Name"></td>
+            </tr>
+            <tr>
+                <td><label for="ancestry">Ancestry</label></td>
+                <td><select name="ancestry" id="ancestry">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="1">Bugbear</option>
+                    <option value="2">Dragonborn</option>
+                    <option value="3">Dwarf</option>
+                    <option value="4">Elf</option>
+                    <option value="5">Elf (Winged)</option>
+                    <option value="6">Ghoul</option>
+                    <option value="7">Gnoll</option>
+                    <option value="8">Gnome</option>
+                    <option value="9">Goblin</option>
+                    <option value="10">Hobgoblin</option>
+                    <option value="11">Human</option>
+                    <option value="12">Kobold</option>
+                    <option value="13">Lizardfolk</option>
+                    <option value="14">Ogre</option>
+                    <option value="15">Orc</option>
+                    <option value="16">Skeleton</option>
+                    <option value="17">Treant</option>
+                    <option value="18">Troll</option>
+                    <option value="19">Zombie</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="experience">Experience</label></td>
+                <td><select name="experience" id="experience">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="1">Green</option>
+                    <option value="2">Regular</option>
+                    <option value="3">Seasoned</option>
+                    <option value="4">Veteran</option>
+                    <option value="5">Elite</option>
+                    <option value="6">Super-Elite</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="equipment">Equipment</label></td>
+                <td><select name="equipment" id="equipment">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="1">Light</option>
+                    <option value="2">Medium</option>
+                    <option value="3">Heavy</option>
+                    <option value="4">Super-Heavy</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="type">Type</label></td>
+                <td><select name="type" id="type">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="1">Flying</option>
+                    <option value="2">Archers</option>
+                    <option value="3">Cavalry</option>
+                    <option value="4">Levies</option>
+                    <option value="5">Infantry</option>
+                    <option value="6">Siege Engine</option>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="size">Size</label></td>
+                <td><select name="size" id="size">
+                    <option value="none" selected disabled hidden>Select an Option</option>
+                    <option value="1">1d4</option>
+                    <option value="2">1d6</option>
+                    <option value="3">1d8</option>
+                    <option value="4">1d10</option>
+                    <option value="5">1d12</option>
+                </select></td>
+            </tr>
+        </table>
         <button id="build-submit">Submit</button>
     </form>
 
     <section id="army-container"></section>
+    </section>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./buildArmy.js"></script>
 </body>
 </html>

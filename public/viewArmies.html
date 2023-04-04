@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strongholds and Followers Army Builder: View Armies</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -13,24 +14,25 @@
         <h1>Army Builder</h1>
     </header>
     <nav class="topnav">
-        <a href="index.html">Home</a>
-        <a href="buildArmy.html">Build Army</a>
-        <a class="active" href="viewArmies.html">View Armies</a>
+        <a href="index.html"><h2>Home</h2></a>
+        <a href="buildArmy.html"><h2>Build Army</h2></a>
+        <a class="active" href="viewArmies.html"><h2>View Armies</h2></a>
     </nav>
     <section class="about-section">
         <h2>View Armies</h2>
-        <p>Here you can view all armies, or pull up armies under a specific commander.</p>
+        <p>Here you can view all armies, or pull up armies under a specific commander. The commander is case-sensitive.</p>
     </section>
-    <div><button id="get-all-armies">Get All Armies</button></div>
-    <form>
-        <input type="text" placeholder="Commander Name" id="commander">
-        <br>
-        <button id="by-commander">Get armies by Commander</button>
-    </form>
 
-    <section id="army-container"></section>
+    <section class="get-btn-section">
+        <form class="get-btn-form">
+            <input type="text" placeholder="Commander Name" id="commander">
+            <button id="by-commander" class="by-commander">Get armies by Commander</button>
+        </form>
+        <button id="get-all-armies" class="get-all">Get All Armies</button>
+    </section>
+    <section id="army-container" class="army-container"></section>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./viewArmies.js"></script>
 </body>
 </html>
