@@ -5,7 +5,7 @@ const getAllBtn = document.getElementById("get-all-armies")
 const getByCommanderBtn = document.getElementById("by-commander")
 
 //base URL
-const baseURL = "../server/server.js"
+const baseURL = "http://localhost:4000"
 
 // GET from server
 
@@ -27,9 +27,9 @@ const getByCommander = event => {
         alert('Please input a commander.')
     } else{
          //Create a loader 
-        armyContainer.innerHTML = `
-            <div class="loader"></div>
-        `
+    armyContainer.innerHTML = `
+        <div class="loader"></div>
+    `
     }
 
    

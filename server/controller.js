@@ -315,7 +315,7 @@ const getArmyObj = async (army) => {
                 ON army_traits.army_id = army.id
             JOIN traits 
                 ON traits.id = army_traits.traits_id
-        WHERE army.id = :army;
+        WHERE army.id = :armyName;
     `, {replacements: replaceObj})
 
     let toRespond = [databaseResponse[0]]
